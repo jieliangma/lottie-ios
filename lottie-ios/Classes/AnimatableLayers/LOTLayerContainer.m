@@ -164,6 +164,21 @@
       } else {
         image = [UIImage imageWithContentsOfFile:imagePath];
       }
+    } else if (asset.imageDirectory.length > 0) {
+        NSString *imagePath = [asset.assetBundle pathForResource:asset.imageName
+                                                          ofType:nil
+                                                     inDirectory:asset.imageDirectory];
+        
+        id<LOTImageCache> imageCache = [LOTCacheProvider imageCache];
+        if (imageCache) {
+            image = [imageCache imageForKey:imagePath];
+            if (!image) {
+                image = [UIImage imageWithContentsOfFile:imagePath];
+                [imageCache setImage:image forKey:imagePath];
+            }
+        } else {
+            image = [UIImage imageWithContentsOfFile:imagePath];
+        }
     } else {
         NSString *imagePath = [asset.assetBundle pathForResource:asset.imageName ofType:nil];
         image = [UIImage imageWithContentsOfFile:imagePath];
